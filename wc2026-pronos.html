@@ -1,0 +1,2135 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#05090F">
+<title>Pronos · Coupe du Monde 2026</title>
+<link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Pronos%20CDM%202026%22,%22short_name%22:%22Pronos26%22,%22display%22:%22standalone%22,%22background_color%22:%22%2305090F%22,%22theme_color%22:%22%2305090F%22}">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap');
+
+  :root {
+    --bg: #05090F;
+    --surface: #0D1520;
+    --surface2: #13203A;
+    --border: #1E2E4A;
+    --gold: #C9A84C;
+    --gold-dim: #8A6A28;
+    --green: #22C55E;
+    --red: #EF4444;
+    --blue: #3B82F6;
+    --text: #E8EDF5;
+    --muted: #6B7A99;
+    --live: #FF4136;
+    --splash-gradient: radial-gradient(circle at 30% 20%, #1a3a5c 0%, #0d1f33 40%, #05090F 100%);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    overscroll-behavior-y: none;
+  }
+
+  button, input { font-family: inherit; }
+
+  ::selection { background: var(--gold); color: #05090F; }
+
+  /* ============ SPLASH / ACCUEIL ============ */
+  .splash {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    overflow: hidden;
+    color: #fff;
+    text-align: center;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+  }
+
+  .splash.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+  .splash-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .splash-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--splash-gradient);
+  }
+
+  .splash-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 50% 110%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.55) 70%),
+      linear-gradient(180deg, rgba(5,9,15,0.15) 0%, rgba(5,9,15,0.97) 92%);
+  }
+
+  .splash-stadium {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 38%;
+    background:
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0 2px, transparent 2px 38px),
+      linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 100%);
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, black 35%);
+    mask-image: linear-gradient(180deg, transparent 0%, black 35%);
+  }
+
+  .splash-lights {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  .splash-beam {
+    position: absolute;
+    top: -10%;
+    width: 140%;
+    height: 160%;
+    left: -20%;
+    background: conic-gradient(from 200deg at 50% 0%, transparent 0deg, rgba(255,255,255,0.05) 8deg, transparent 16deg, transparent 360deg);
+    animation: sway 9s ease-in-out infinite;
+    transform-origin: top center;
+  }
+
+  .splash-beam.b2 { animation-delay: -3s; opacity: 0.6; animation-direction: reverse; }
+  .splash-beam.b3 { animation-delay: -6s; opacity: 0.4; }
+
+  @keyframes sway {
+    0%, 100% { transform: rotate(-6deg); }
+    50% { transform: rotate(6deg); }
+  }
+
+  .splash-emoji-field {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .splash-emoji {
+    position: absolute;
+    opacity: 0;
+    animation: floatUp linear infinite;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
+  }
+
+  @keyframes floatUp {
+    0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+    8% { opacity: 0.85; }
+    92% { opacity: 0.85; }
+    100% { transform: translateY(-10vh) rotate(25deg); opacity: 0; }
+  }
+
+  .splash-content {
+    position: relative;
+    z-index: 2;
+    padding: 0 28px 44px;
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .splash-trophy {
+    font-size: 56px;
+    margin-bottom: 10px;
+    animation: trophyPop 0.7s cubic-bezier(.2,1.4,.4,1) both;
+    filter: drop-shadow(0 6px 18px rgba(201,168,76,0.45));
+  }
+
+  @keyframes trophyPop {
+    0% { transform: scale(0) rotate(-25deg); opacity: 0; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+
+  .splash-eyebrow {
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 6px;
+    font-weight: 700;
+  }
+
+  .splash-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    letter-spacing: 2px;
+    line-height: 1;
+    margin-bottom: 14px;
+    text-shadow: 0 4px 24px rgba(0,0,0,0.5);
+  }
+
+  .splash-title span { color: var(--gold); }
+
+  .splash-slogan {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    background: rgba(201,168,76,0.14);
+    border: 1px solid rgba(201,168,76,0.35);
+    padding: 10px 18px;
+    border-radius: 14px;
+    margin-bottom: 28px;
+    line-height: 1.5;
+    backdrop-filter: blur(6px);
+  }
+
+  .splash-slogan .sub {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    margin-top: 3px;
+    letter-spacing: 0.3px;
+  }
+
+  .splash-actions {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .btn {
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+  }
+
+  .btn:active { transform: scale(0.97); }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--gold), #E0C067);
+    color: #1a1404;
+    box-shadow: 0 8px 24px rgba(201,168,76,0.3);
+  }
+
+  .btn-secondary {
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.18);
+    backdrop-filter: blur(6px);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  /* ============ AUTH SCREENS ============ */
+  .auth-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 900;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+
+  .auth-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+  .auth-header {
+    padding: 18px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .back-btn {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+
+  .auth-header-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 1px;
+  }
+
+  .auth-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 20px 40px;
+    max-width: 440px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .auth-emoji-row {
+    text-align: center;
+    font-size: 34px;
+    margin-bottom: 18px;
+    letter-spacing: 8px;
+  }
+
+  .field {
+    margin-bottom: 16px;
+  }
+
+  .field label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+
+  .field input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 13px 14px;
+    color: var(--text);
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .field input:focus { border-color: var(--gold); }
+
+  .field-hint {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 5px;
+  }
+
+  .field-error {
+    font-size: 12px;
+    color: var(--red);
+    margin-top: 6px;
+    display: none;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .field-error.show { display: flex; }
+
+  .auth-switch {
+    text-align: center;
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 18px;
+  }
+
+  .auth-switch a {
+    color: var(--gold);
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .recovery-card {
+    background: linear-gradient(160deg, rgba(201,168,76,0.12), rgba(201,168,76,0.03));
+    border: 1.5px solid var(--gold-dim);
+    border-radius: 16px;
+    padding: 22px 18px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .recovery-icon { font-size: 38px; margin-bottom: 10px; }
+
+  .recovery-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 1px;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  .recovery-code {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 6px;
+    background: var(--bg);
+    border: 1px dashed var(--gold-dim);
+    border-radius: 10px;
+    padding: 14px 10px;
+    margin: 14px 0;
+    color: var(--text);
+    word-break: break-all;
+  }
+
+  .recovery-warning {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+    text-align: left;
+    background: rgba(239,68,68,0.08);
+    border: 1px solid rgba(239,68,68,0.2);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-top: 6px;
+  }
+
+  .copy-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--gold);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  /* ============ APP SHELL ============ */
+  #app { display: none; min-height: 100vh; }
+  #app.show { display: block; }
+
+  header {
+    background: linear-gradient(180deg, #0A1828 0%, var(--bg) 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 16px 14px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+
+  .header-top-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .header-user-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 5px 10px 5px 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .header-user-avatar {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), #8A6A28);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    font-weight: 800;
+    color: #1a1404;
+  }
+
+  .header-icon-btn {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+
+  .header-eyebrow {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+
+  .header-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: 2px;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .header-title span { color: var(--gold); }
+
+  .score-banner {
+    margin-top: 10px;
+    display: inline-flex;
+    gap: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 5px 16px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .score-banner strong { color: var(--gold); font-size: 14px; }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 0;
+    padding: 12px 16px 0;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+
+  .tab {
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+  }
+
+  .tab.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
+
+  /* MAIN */
+  main { padding: 16px; max-width: 600px; margin: 0 auto; padding-bottom: 60px; }
+
+  /* SECTION TITLE */
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 8px 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .live-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--live);
+    box-shadow: 0 0 6px var(--live);
+    animation: pulse 1.5s ease-in-out infinite;
+    display: inline-block;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* MATCH CARD */
+  .match-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .match-card.has-prono { border-color: var(--gold-dim); }
+  .match-card.live { border-color: var(--live); }
+
+  .match-header {
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
+    background: var(--surface2);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+    gap: 6px;
+  }
+
+  .match-header .time { margin-left: auto; }
+
+  .match-body {
+    padding: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .team {
+    flex: 1;
+    text-align: center;
+  }
+
+  .team-flag {
+    font-size: 28px;
+    display: block;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .team-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .vs-area {
+    flex: 0 0 110px;
+    text-align: center;
+  }
+
+  .score-display {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    letter-spacing: 4px;
+    line-height: 1;
+    color: var(--text);
+  }
+
+  .score-display.live-score { color: var(--live); }
+  .score-display.final-score { color: var(--muted); }
+
+  .vs-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    color: var(--border);
+    letter-spacing: 2px;
+  }
+
+  /* PRONO INPUT */
+  .prono-area {
+    padding: 0 14px 14px;
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+  }
+
+  .prono-label {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  .prono-inputs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .prono-team-label {
+    font-size: 11px;
+    color: var(--muted);
+    flex: 1;
+    text-align: center;
+  }
+
+  .score-input-wrap {
+    flex: 0 0 100px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    justify-content: center;
+  }
+
+  .score-btn {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 16px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+
+  .score-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+  .score-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    min-width: 24px;
+    text-align: center;
+    color: var(--gold);
+  }
+
+  .prono-dash {
+    color: var(--muted);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+  }
+
+  .save-btn {
+    width: 100%;
+    margin-top: 10px;
+    padding: 8px;
+    background: var(--gold);
+    color: #05090F;
+    border: none;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .save-btn:hover { opacity: 0.85; }
+  .save-btn:disabled { opacity: 0.4; cursor: default; }
+
+  .saved-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 10px; color: var(--green); margin-top: 6px;
+  }
+
+  /* RESULT DISPLAY for finished */
+  .result-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  .result-exact { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+  .result-winner { background: rgba(201,168,76,0.15); color: var(--gold); border: 1px solid rgba(201,168,76,0.3); }
+  .result-miss { background: rgba(239,68,68,0.1); color: var(--red); border: 1px solid rgba(239,68,68,0.2); }
+
+  /* CLASSEMENT */
+  .rank-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 8px;
+  }
+
+  .rank-row.is-user { border-color: var(--gold); background: rgba(201,168,76,0.06); }
+
+  .rank-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: var(--muted);
+    width: 26px;
+    text-align: center;
+  }
+
+  .rank-num.gold { color: var(--gold); }
+  .rank-medal { font-size: 18px; width: 26px; text-align: center; }
+  .rank-avatar {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--surface2), var(--border));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 800; color: var(--gold);
+    flex-shrink: 0;
+  }
+  .rank-name { flex: 1; font-weight: 600; font-size: 14px; }
+  .rank-pts { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--gold); }
+  .rank-pts-label { font-size: 10px; color: var(--muted); }
+
+  /* REGLES */
+  .rules-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+
+  .rules-card h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 1px;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+
+  .rule-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+
+  .rule-row:last-child { border-bottom: none; }
+  .rule-pts { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--gold); min-width: 30px; }
+
+  /* EMPTY */
+  .empty { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 13px; }
+  .empty-icon { font-size: 36px; margin-bottom: 10px; }
+
+  /* PRONO SUMMARY */
+  .prono-summary {
+    font-size: 12px;
+    color: var(--muted);
+    padding: 0 14px 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .prono-score-preview {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    color: var(--gold);
+  }
+
+  .prob-bar-wrap {
+    display: flex;
+    height: 3px;
+    border-radius: 2px;
+    overflow: hidden;
+    margin: 6px 14px 10px;
+    gap: 2px;
+  }
+
+  .prob-bar { height: 100%; border-radius: 2px; }
+
+  /* ============ TABLEAU COMPARATIF ============ */
+  .compare-scroll {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table.compare-table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 12px;
+    min-width: 480px;
+  }
+
+  .compare-table th, .compare-table td {
+    padding: 9px 8px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  .compare-table thead th {
+    background: var(--surface2);
+    color: var(--gold);
+    font-size: 10px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    position: sticky;
+    top: 0;
+  }
+
+  .compare-table .player-col {
+    text-align: left;
+    position: sticky;
+    left: 0;
+    background: var(--surface2);
+    font-weight: 700;
+    color: var(--text);
+    z-index: 2;
+    min-width: 100px;
+  }
+
+  .compare-table tbody .player-col { background: var(--surface); }
+  .compare-table tbody tr.is-user .player-col { background: rgba(201,168,76,0.1); color: var(--gold); }
+  .compare-table tbody tr:last-child td { border-bottom: none; }
+
+  .cell-exact { color: var(--green); font-weight: 700; }
+  .cell-winner { color: var(--gold); font-weight: 700; }
+  .cell-miss { color: var(--red); opacity: 0.6; }
+  .cell-pending { color: var(--muted); }
+
+  .compare-total {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    color: var(--gold);
+  }
+
+  .compare-hint {
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  /* ============ ADMIN ============ */
+  .admin-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 10px;
+  }
+
+  .admin-user-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .admin-user-row:last-child { border-bottom: none; }
+
+  .admin-user-info { flex: 1; min-width: 0; }
+  .admin-user-name { font-weight: 700; font-size: 14px; }
+  .admin-user-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  .admin-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 7px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .admin-btn.danger { color: var(--red); border-color: rgba(239,68,68,0.3); }
+  .admin-btn.gold { color: var(--gold); border-color: var(--gold-dim); }
+
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    z-index: 2000;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .modal-overlay.hidden { display: none; }
+
+  .modal-sheet {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    border-radius: 18px 18px 0 0;
+    padding: 22px 20px calc(22px + env(safe-area-inset-bottom, 0px));
+    width: 100%;
+    max-width: 480px;
+    animation: slideUp 0.25s ease;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .modal-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 1px;
+    color: var(--gold);
+    margin-bottom: 14px;
+    text-align: center;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--surface2);
+    border: 1px solid var(--gold-dim);
+    color: var(--text);
+    padding: 12px 20px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 600;
+    z-index: 3000;
+    opacity: 0;
+    transition: all 0.25s ease;
+    pointer-events: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 90%;
+    text-align: center;
+  }
+
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .loading-screen {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 5000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .loading-screen.hidden { display: none; }
+
+  .loading-ball {
+    font-size: 40px;
+    animation: bounce 0.8s ease-in-out infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-16px); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ LOADING ============ -->
+<div class="loading-screen" id="loadingScreen">
+  <div class="loading-ball">⚽</div>
+  <div style="font-size:12px;color:var(--muted);letter-spacing:1px">Chargement...</div>
+</div>
+
+<!-- ============ SPLASH / ACCUEIL ============ -->
+<div class="splash hidden" id="splashScreen">
+  <div class="splash-bg" id="splashBg"></div>
+  <div class="splash-stadium"></div>
+  <div class="splash-lights">
+    <div class="splash-beam b1"></div>
+    <div class="splash-beam b2"></div>
+    <div class="splash-beam b3"></div>
+  </div>
+  <div class="splash-emoji-field" id="splashEmojiField"></div>
+
+  <div class="splash-content">
+    <div class="splash-trophy">🏆</div>
+    <div class="splash-eyebrow">FIFA · 2026 · 🇺🇸 🇨🇦 🇲🇽</div>
+    <div class="splash-title">Pronos <span>Coupe du Monde</span></div>
+    <div class="splash-slogan" id="splashSlogan">
+      ديما فالطوب، اللي عارف يربح! 🔥
+      <span class="sub">Dima f Top, lli 3aref yerbeh!</span>
+    </div>
+    <div class="splash-actions">
+      <button class="btn btn-primary" onclick="goToScreen('register')">⚡ Créer mon compte</button>
+      <button class="btn btn-secondary" onclick="goToScreen('login')">👋 J'ai déjà un compte</button>
+      <button class="btn btn-ghost" onclick="goToScreen('adminLogin')">🛠️ Espace admin</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ INSCRIPTION ============ -->
+<div class="auth-screen hidden" id="registerScreen">
+  <div class="auth-header">
+    <button class="back-btn" onclick="goToScreen('splash')">←</button>
+    <div class="auth-header-title">Créer un compte</div>
+  </div>
+  <div class="auth-body">
+    <div class="auth-emoji-row">⚽🏆🔥</div>
+    <div class="field">
+      <label>Pseudo</label>
+      <input type="text" id="regUsername" placeholder="Ex: Mehdi26" maxlength="20" autocomplete="off" autocapitalize="off">
+      <div class="field-hint">3 à 20 caractères, visible par tout le monde</div>
+      <div class="field-error" id="regUsernameError">⚠️ <span></span></div>
+    </div>
+    <div class="field">
+      <label>Mot de passe</label>
+      <input type="password" id="regPassword" placeholder="Min. 4 caractères" autocomplete="new-password">
+      <div class="field-error" id="regPasswordError">⚠️ <span></span></div>
+    </div>
+    <button class="btn btn-primary" style="width:100%" onclick="handleRegister()">🚀 Valider mon inscription</button>
+    <div class="auth-switch">Déjà inscrit ? <a onclick="goToScreen('login')">Se connecter</a></div>
+  </div>
+</div>
+
+<!-- ============ CODE DE RÉCUPÉRATION (après inscription) ============ -->
+<div class="auth-screen hidden" id="recoveryScreen">
+  <div class="auth-header">
+    <div class="auth-header-title" style="margin:0 auto">🎉 Bienvenue !</div>
+  </div>
+  <div class="auth-body">
+    <div class="recovery-card">
+      <div class="recovery-icon">🔑</div>
+      <div class="recovery-title">Ton code de récupération</div>
+      <div style="font-size:12px;color:var(--muted)">Garde-le précieusement. Il permet à l'admin de réinitialiser ton mot de passe si tu l'oublies.</div>
+      <div class="recovery-code" id="recoveryCodeDisplay">XXXX-XXXX</div>
+      <button class="copy-btn" onclick="copyRecoveryCode()">📋 Copier le code</button>
+      <div class="recovery-warning">
+        ⚠️ Ce code ne sera <strong>plus jamais affiché</strong>. Fais une capture d'écran ou note-le quelque part de sûr. En cas de perte, contacte l'administrateur avec ton pseudo.
+      </div>
+    </div>
+    <button class="btn btn-primary" style="width:100%" onclick="finishRegistration()">✅ C'est noté, continuer</button>
+  </div>
+</div>
+
+<!-- ============ CONNEXION ============ -->
+<div class="auth-screen hidden" id="loginScreen">
+  <div class="auth-header">
+    <button class="back-btn" onclick="goToScreen('splash')">←</button>
+    <div class="auth-header-title">Connexion</div>
+  </div>
+  <div class="auth-body">
+    <div class="auth-emoji-row">👋🏆⚽</div>
+    <div class="field">
+      <label>Pseudo</label>
+      <input type="text" id="loginUsername" placeholder="Ton pseudo" autocomplete="username" autocapitalize="off">
+    </div>
+    <div class="field">
+      <label>Mot de passe</label>
+      <input type="password" id="loginPassword" placeholder="Ton mot de passe" autocomplete="current-password">
+      <div class="field-error" id="loginError">⚠️ <span></span></div>
+    </div>
+    <button class="btn btn-primary" style="width:100%" onclick="handleLogin()">🔓 Se connecter</button>
+    <div class="auth-switch">Pas encore de compte ? <a onclick="goToScreen('register')">S'inscrire</a></div>
+    <div class="auth-switch" style="margin-top:4px">Mot de passe oublié ? <a onclick="goToScreen('forgotInfo')">Comment faire</a></div>
+  </div>
+</div>
+
+<!-- ============ MOT DE PASSE OUBLIÉ - INFO ============ -->
+<div class="auth-screen hidden" id="forgotInfoScreen">
+  <div class="auth-header">
+    <button class="back-btn" onclick="goToScreen('login')">←</button>
+    <div class="auth-header-title">Mot de passe oublié</div>
+  </div>
+  <div class="auth-body">
+    <div class="auth-emoji-row">🔑🛠️</div>
+    <div class="rules-card">
+      <h3>Comment récupérer l'accès</h3>
+      <div style="font-size:13px;line-height:1.8;color:var(--text)">
+        Seul l'<strong>administrateur</strong> peut réinitialiser ton mot de passe, à condition de lui fournir ton <strong>code de récupération unique</strong> reçu à l'inscription.<br><br>
+        Contacte l'admin du groupe en lui donnant ton pseudo et ton code. Il pourra alors te générer un nouveau mot de passe depuis son panneau.
+      </div>
+    </div>
+    <button class="btn btn-secondary" style="width:100%" onclick="goToScreen('login')">Retour à la connexion</button>
+  </div>
+</div>
+
+<!-- ============ ADMIN LOGIN ============ -->
+<div class="auth-screen hidden" id="adminLoginScreen">
+  <div class="auth-header">
+    <button class="back-btn" onclick="goToScreen('splash')">←</button>
+    <div class="auth-header-title">Espace admin</div>
+  </div>
+  <div class="auth-body">
+    <div class="auth-emoji-row">🛠️🔐</div>
+    <div class="field">
+      <label>Mot de passe administrateur</label>
+      <input type="password" id="adminPassword" placeholder="••••••••" autocomplete="off">
+      <div class="field-error" id="adminLoginError">⚠️ <span></span></div>
+    </div>
+    <button class="btn btn-primary" style="width:100%" onclick="handleAdminLogin()">🔓 Entrer</button>
+  </div>
+</div>
+
+<!-- ============ APP PRINCIPALE ============ -->
+<div id="app">
+  <header>
+    <div class="header-top-row">
+      <div class="header-user-chip" id="headerUserChip">
+        <div class="header-user-avatar" id="headerAvatar">?</div>
+        <span id="headerUsername">—</span>
+      </div>
+      <button class="header-icon-btn" onclick="handleLogout()" title="Se déconnecter">🚪</button>
+    </div>
+    <div class="header-eyebrow">FIFA · 2026</div>
+    <div class="header-title">Coupe du <span>Monde</span></div>
+    <div class="score-banner">
+      <span>Ton score : <strong id="totalScore">0</strong> pts</span>
+      <span>Pronos : <strong id="pronoCount">0</strong></span>
+    </div>
+  </header>
+
+  <div class="tabs" id="mainTabs">
+    <button class="tab active" data-tab="matches">⚽ Matchs</button>
+    <button class="tab" data-tab="mespronos">📋 Mes pronos</button>
+    <button class="tab" data-tab="classement">🏅 Classement</button>
+    <button class="tab" data-tab="compare">📊 Comparatif</button>
+    <button class="tab" data-tab="regles">📖 Règles</button>
+  </div>
+
+  <main>
+    <div id="tab-matches"></div>
+    <div id="tab-mespromos" style="display:none"></div>
+    <div id="tab-classement" style="display:none"></div>
+    <div id="tab-compare" style="display:none"></div>
+    <div id="tab-regles" style="display:none"></div>
+  </main>
+</div>
+
+<!-- ============ APP ADMIN ============ -->
+<div id="adminApp" style="display:none;min-height:100vh">
+  <header>
+    <div class="header-top-row">
+      <div class="header-user-chip">
+        <div class="header-user-avatar">🛠️</div>
+        <span>Mode Admin</span>
+      </div>
+      <button class="header-icon-btn" onclick="handleAdminLogout()" title="Quitter">🚪</button>
+    </div>
+    <div class="header-eyebrow">PANNEAU</div>
+    <div class="header-title">Gestion des <span>utilisateurs</span></div>
+  </header>
+  <main>
+    <div class="section-label">👥 Utilisateurs inscrits</div>
+    <div id="adminUserList"></div>
+  </main>
+</div>
+
+<!-- ============ MODAL: Reset password (admin) ============ -->
+<div class="modal-overlay hidden" id="resetModal">
+  <div class="modal-sheet">
+    <div class="modal-title">🔑 Réinitialiser le mot de passe</div>
+    <div class="field">
+      <label>Pseudo concerné</label>
+      <input type="text" id="resetUsername" disabled>
+    </div>
+    <div class="field">
+      <label>Code de récupération de l'utilisateur</label>
+      <input type="text" id="resetCode" placeholder="Code fourni par l'utilisateur" autocapitalize="off">
+      <div class="field-error" id="resetCodeError">⚠️ <span></span></div>
+    </div>
+    <div class="field">
+      <label>Nouveau mot de passe</label>
+      <input type="password" id="resetNewPassword" placeholder="Nouveau mot de passe (min. 4)">
+    </div>
+    <button class="btn btn-primary" style="width:100%;margin-bottom:8px" onclick="confirmReset()">✅ Réinitialiser</button>
+    <button class="btn btn-ghost" style="width:100%" onclick="closeModal('resetModal')">Annuler</button>
+  </div>
+</div>
+
+<!-- ============ MODAL: Delete user (admin) ============ -->
+<div class="modal-overlay hidden" id="deleteModal">
+  <div class="modal-sheet">
+    <div class="modal-title">🗑️ Supprimer l'utilisateur</div>
+    <p style="font-size:13px;color:var(--muted);text-align:center;margin-bottom:16px">
+      Es-tu sûr de vouloir supprimer <strong id="deleteUsernameLabel" style="color:var(--text)"></strong> et tous ses pronostics ? Cette action est irréversible.
+    </p>
+    <button class="btn" style="width:100%;margin-bottom:8px;background:var(--red);color:#fff" onclick="confirmDelete()">🗑️ Supprimer définitivement</button>
+    <button class="btn btn-ghost" style="width:100%" onclick="closeModal('deleteModal')">Annuler</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ========================================================================
+// ===== DONNÉES STATIQUES (drapeaux, noms, matchs) =====
+// ========================================================================
+const FLAGS = {
+  URU:'🇺🇾', CPV:'🇨🇻', USA:'🇺🇸', AUS:'🇦🇺', SCO:'🏴󠁧󠁢󠁳󠁣󠁴󠁿',
+  MAR:'🇲🇦', BRA:'🇧🇷', HTI:'🇭🇹', TUR:'🇹🇷', PAR:'🇵🇾',
+  NED:'🇳🇱', SWE:'🇸🇪', GER:'🇩🇪', CIV:'🇨🇮', ECU:'🇪🇨',
+  CUW:'🇨🇼', TUN:'🇹🇳', JPN:'🇯🇵', ESP:'🇪🇸', KSA:'🇸🇦',
+  BEL:'🇧🇪', IRN:'🇮🇷', NZL:'🇳🇿', EGY:'🇪🇬', ARG:'🇦🇷',
+  AUT:'🇦🇹', FRA:'🇫🇷', IRQ:'🇮🇶', NOR:'🇳🇴', SEN:'🇸🇳',
+  JOR:'🇯🇴', DZA:'🇩🇿', POR:'🇵🇹', UZB:'🇺🇿', ENG:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',
+  GHA:'🇬🇭', PAN:'🇵🇦', CRO:'🇭🇷', COL:'🇨🇴', COD:'🇨🇩',
+  SUI:'🇨🇭', CAN:'🇨🇦'
+};
+
+const NAMES = {
+  URU:'Uruguay', CPV:'Cap-Vert', USA:'États-Unis', AUS:'Australie',
+  SCO:'Écosse', MAR:'Maroc', BRA:'Brésil', HTI:'Haïti',
+  TUR:'Turquie', PAR:'Paraguay', NED:'Pays-Bas', SWE:'Suède',
+  GER:'Allemagne', CIV:'Côte d\'Ivoire', ECU:'Équateur',
+  CUW:'Curaçao', TUN:'Tunisie', JPN:'Japon', ESP:'Espagne',
+  KSA:'Arabie Saoudite', BEL:'Belgique', IRN:'Iran', NZL:'Nouvelle-Zélande',
+  EGY:'Égypte', ARG:'Argentine', AUT:'Autriche', FRA:'France',
+  IRQ:'Irak', NOR:'Norvège', SEN:'Sénégal', JOR:'Jordanie',
+  DZA:'Algérie', POR:'Portugal', UZB:'Ouzbékistan', ENG:'Angleterre',
+  GHA:'Ghana', PAN:'Panama', CRO:'Croatie', COL:'Colombie',
+  COD:'RD Congo', SUI:'Suisse', CAN:'Canada'
+};
+
+const matches = [
+  {id:'m1', status:'in_progress', home:'URU', away:'CPV', hScore:2, aScore:2, time:'En cours', prob:null},
+  {id:'m2', status:'final', home:'USA', away:'AUS', hScore:2, aScore:0, time:'Terminé', prob:null},
+  {id:'m3', status:'final', home:'SCO', away:'MAR', hScore:0, aScore:1, time:'Terminé', prob:null},
+  {id:'m4', status:'final', home:'BRA', away:'HTI', hScore:3, aScore:0, time:'Terminé', prob:null},
+  {id:'m5', status:'final', home:'TUR', away:'PAR', hScore:0, aScore:1, time:'Terminé', prob:null},
+  {id:'m6', status:'final', home:'NED', away:'SWE', hScore:5, aScore:1, time:'Terminé', prob:null},
+  {id:'m7', status:'final', home:'GER', away:'CIV', hScore:2, aScore:1, time:'Terminé', prob:null},
+  {id:'m8', status:'final', home:'ECU', away:'CUW', hScore:0, aScore:0, time:'Terminé', prob:null},
+  {id:'m9', status:'final', home:'TUN', away:'JPN', hScore:0, aScore:4, time:'Terminé', prob:null},
+  {id:'m10', status:'final', home:'ESP', away:'KSA', hScore:4, aScore:0, time:'Terminé', prob:null},
+  {id:'m11', status:'final', home:'BEL', away:'IRN', hScore:0, aScore:0, time:'Terminé', prob:null},
+  {id:'m12', status:'scheduled', home:'NZL', away:'EGY', hScore:0, aScore:0, time:'Lun 22 Jun · 02h00', prob:{h:15.5, d:23, a:61.5}},
+  {id:'m13', status:'scheduled', home:'ARG', away:'AUT', hScore:0, aScore:0, time:'Lun 22 Jun · 19h00', prob:{h:63.6, d:22, a:14.4}},
+  {id:'m14', status:'scheduled', home:'FRA', away:'IRQ', hScore:0, aScore:0, time:'Lun 22 Jun · 23h00', prob:{h:91, d:6.7, a:2.3}},
+  {id:'m15', status:'scheduled', home:'NOR', away:'SEN', hScore:0, aScore:0, time:'Mar 23 Jun · 02h00', prob:{h:41.6, d:27.1, a:31.3}},
+  {id:'m16', status:'scheduled', home:'JOR', away:'DZA', hScore:0, aScore:0, time:'Mar 23 Jun · 05h00', prob:{h:15.9, d:22.7, a:61.4}},
+  {id:'m17', status:'scheduled', home:'POR', away:'UZB', hScore:0, aScore:0, time:'Mar 23 Jun · 19h00', prob:{h:81, d:12.9, a:6.1}},
+  {id:'m18', status:'scheduled', home:'ENG', away:'GHA', hScore:0, aScore:0, time:'Mar 23 Jun · 22h00', prob:{h:80, d:13.5, a:6.5}},
+  {id:'m19', status:'scheduled', home:'PAN', away:'CRO', hScore:0, aScore:0, time:'Mer 24 Jun · 01h00', prob:{h:14.7, d:22.6, a:62.7}},
+  {id:'m20', status:'scheduled', home:'COL', away:'COD', hScore:0, aScore:0, time:'Mer 24 Jun · 05h00', prob:{h:63.6, d:22.7, a:13.7}},
+  {id:'m21', status:'scheduled', home:'SUI', away:'CAN', hScore:0, aScore:0, time:'Mer 24 Jun · 21h00', prob:{h:39.1, d:30.9, a:30}},
+];
+
+// Slogans en darija (alternent à chaque ouverture)
+const SLOGANS = [
+  {ar:'ديما فالطوب، اللي عارف يربح! 🔥', lat:'Dima f Top, lli 3aref yerbeh!'},
+  {ar:'شد لكورة، رابح ديما! ⚽', lat:'Chedd lkora, rabeh dima!'},
+  {ar:'هاد العام راه ليا! 🏆', lat:'Had l3am rah liya!'},
+  {ar:'توقع و فاجئ الجميع! ✨', lat:'Tewaqe3 w faj2 lgami3!'},
+  {ar:'لي ما عندوش الكرة، يحسب! 😏', lat:'Lli ma 3andouch lkora, yhssb!'},
+];
+
+// Dégradés "stade de nuit" pour le splash (changent à chaque ouverture)
+const SPLASH_GRADIENTS = [
+  'radial-gradient(circle at 30% 20%, #1a3a5c 0%, #0d1f33 40%, #05090F 100%)',
+  'radial-gradient(circle at 70% 15%, #2b1f4a 0%, #14102a 45%, #05090F 100%)',
+  'radial-gradient(circle at 50% 10%, #1f3d2e 0%, #0e1f17 45%, #05090F 100%)',
+  'radial-gradient(circle at 25% 25%, #4a2515 0%, #2a1410 45%, #05090F 100%)',
+  'radial-gradient(circle at 75% 20%, #1a2c4a 0%, #0d1626 45%, #05090F 100%)',
+];
+
+const FLOATING_EMOJIS = ['⚽','🏆','🔥','🎉','🥅','🟢','⭐','🇲🇦'];
+
+// ========================================================================
+// ===== STORAGE HELPERS (window.storage — partagé entre utilisateurs) =====
+// ========================================================================
+async function storageGet(key, shared) {
+  try {
+    const r = await window.storage.get(key, !!shared);
+    return r ? JSON.parse(r.value) : null;
+  } catch (e) {
+    return null;
+  }
+}
+async function storageSet(key, value, shared) {
+  try {
+    await window.storage.set(key, JSON.stringify(value), !!shared);
+    return true;
+  } catch (e) {
+    console.error('Storage error', e);
+    return false;
+  }
+}
+async function storageDelete(key, shared) {
+  try {
+    await window.storage.delete(key, !!shared);
+  } catch (e) { /* ignore */ }
+}
+async function storageListKeys(prefix, shared) {
+  try {
+    const r = await window.storage.list(prefix, !!shared);
+    return r ? r.keys : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+// Simple hash (SHA-256) pour ne jamais stocker les mots de passe en clair
+async function hashText(text) {
+  const enc = new TextEncoder().encode(text);
+  const buf = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+function genRecoveryCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // sans caractères ambigus
+  let code = '';
+  for (let i = 0; i < 8; i++) {
+    if (i === 4) code += '-';
+    code += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return code;
+}
+
+function normalizeUsername(u) {
+  return (u || '').trim();
+}
+
+// ========================================================================
+// ===== ÉTAT GLOBAL =====
+// ========================================================================
+let currentUser = null;     // pseudo connecté
+let pronos = {};            // pronos[matchId] = {h,a}  (de l'utilisateur courant)
+let allUsersCache = [];     // pour le tableau comparatif / classement
+let pendingRecoveryCode = '';
+let pendingNewUsername = '';
+let currentTab = 'matches';
+let resetTargetUser = '';
+let deleteTargetUser = '';
+
+const ADMIN_PASSWORD = 'admin2026'; // mot de passe administrateur (modifiable ici)
+
+// ========================================================================
+// ===== INIT =====
+// ========================================================================
+async function init() {
+  setupSplash();
+  setupTabs();
+
+  // Session persistée ?
+  const session = sessionStorage.getItem('wc2026_session');
+  document.getElementById('loadingScreen').classList.add('hidden');
+
+  if (session) {
+    const ok = await tryRestoreSession(session);
+    if (ok) return;
+  }
+  document.getElementById('splashScreen').classList.remove('hidden');
+}
+
+async function tryRestoreSession(username) {
+  const user = await storageGet('users:' + username.toLowerCase(), true);
+  if (!user) return false;
+  await logUserIn(username, true);
+  return true;
+}
+
+function setupSplash() {
+  // Image / dégradé aléatoire à chaque ouverture
+  const grad = SPLASH_GRADIENTS[Math.floor(Math.random() * SPLASH_GRADIENTS.length)];
+  document.documentElement.style.setProperty('--splash-gradient', grad);
+
+  // Slogan aléatoire
+  const slogan = SLOGANS[Math.floor(Math.random() * SLOGANS.length)];
+  document.getElementById('splashSlogan').innerHTML = `${slogan.ar}<span class="sub">${slogan.lat}</span>`;
+
+  // Emojis flottants
+  const field = document.getElementById('splashEmojiField');
+  let html = '';
+  for (let i = 0; i < 18; i++) {
+    const emoji = FLOATING_EMOJIS[Math.floor(Math.random() * FLOATING_EMOJIS.length)];
+    const left = Math.random() * 100;
+    const size = 16 + Math.random() * 22;
+    const duration = 6 + Math.random() * 8;
+    const delay = Math.random() * 8;
+    html += `<span class="splash-emoji" style="left:${left}%;font-size:${size}px;animation-duration:${duration}s;animation-delay:-${delay}s">${emoji}</span>`;
+  }
+  field.innerHTML = html;
+}
+
+// ========================================================================
+// ===== NAVIGATION ENTRE ÉCRANS =====
+// ========================================================================
+const SCREENS = ['splash','register','recovery','login','forgotInfo','adminLogin'];
+function goToScreen(name) {
+  SCREENS.forEach(s => {
+    const el = document.getElementById(s + 'Screen');
+    if (el) el.classList.add('hidden');
+  });
+  clearErrors();
+  const el = document.getElementById(name + 'Screen');
+  if (el) el.classList.remove('hidden');
+}
+
+function clearErrors() {
+  document.querySelectorAll('.field-error').forEach(e => e.classList.remove('show'));
+}
+
+function showFieldError(id, msg) {
+  const el = document.getElementById(id);
+  el.querySelector('span').textContent = msg;
+  el.classList.add('show');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+// ========================================================================
+// ===== INSCRIPTION =====
+// ========================================================================
+async function handleRegister() {
+  clearErrors();
+  const username = normalizeUsername(document.getElementById('regUsername').value);
+  const password = document.getElementById('regPassword').value;
+
+  if (username.length < 3 || username.length > 20) {
+    showFieldError('regUsernameError', 'Le pseudo doit faire entre 3 et 20 caractères.');
+    return;
+  }
+  if (!/^[a-zA-Z0-9_À-ÿ ]+$/.test(username)) {
+    showFieldError('regUsernameError', 'Caractères non autorisés dans le pseudo.');
+    return;
+  }
+  if (password.length < 4) {
+    showFieldError('regPasswordError', 'Le mot de passe doit faire au moins 4 caractères.');
+    return;
+  }
+
+  const key = 'users:' + username.toLowerCase();
+  const existing = await storageGet(key, true);
+  if (existing) {
+    showFieldError('regUsernameError', 'Ce pseudo est déjà pris.');
+    return;
+  }
+
+  const recoveryCode = genRecoveryCode();
+  const passwordHash = await hashText(password);
+  const recoveryCodeHash = await hashText(recoveryCode);
+
+  const userRecord = {
+    username: username,
+    passwordHash: passwordHash,
+    recoveryCodeHash: recoveryCodeHash,
+    createdAt: Date.now(),
+  };
+
+  const ok = await storageSet(key, userRecord, true);
+  if (!ok) {
+    showToast('❌ Erreur réseau, réessaie.');
+    return;
+  }
+
+  pendingRecoveryCode = recoveryCode;
+  pendingNewUsername = username;
+  document.getElementById('recoveryCodeDisplay').textContent = recoveryCode;
+  goToScreen('recovery');
+}
+
+function copyRecoveryCode() {
+  navigator.clipboard?.writeText(pendingRecoveryCode).then(() => {
+    showToast('✅ Code copié !');
+  }).catch(() => {
+    showToast('Code : ' + pendingRecoveryCode);
+  });
+}
+
+async function finishRegistration() {
+  await logUserIn(pendingNewUsername, false);
+}
+
+// ========================================================================
+// ===== CONNEXION =====
+// ========================================================================
+async function handleLogin() {
+  clearErrors();
+  const username = normalizeUsername(document.getElementById('loginUsername').value);
+  const password = document.getElementById('loginPassword').value;
+
+  if (!username || !password) {
+    showFieldError('loginError', 'Remplis tous les champs.');
+    return;
+  }
+
+  const key = 'users:' + username.toLowerCase();
+  const user = await storageGet(key, true);
+  if (!user) {
+    showFieldError('loginError', 'Pseudo introuvable.');
+    return;
+  }
+
+  const passwordHash = await hashText(password);
+  if (passwordHash !== user.passwordHash) {
+    showFieldError('loginError', 'Mot de passe incorrect.');
+    return;
+  }
+
+  await logUserIn(user.username, true);
+}
+
+async function logUserIn(username, showWelcomeToast) {
+  currentUser = username;
+  sessionStorage.setItem('wc2026_session', username);
+
+  pronos = (await storageGet('pronos:' + username.toLowerCase(), true)) || {};
+
+  document.getElementById('headerUsername').textContent = username;
+  document.getElementById('headerAvatar').textContent = username.charAt(0).toUpperCase();
+
+  SCREENS.forEach(s => document.getElementById(s + 'Screen')?.classList.add('hidden'));
+  document.getElementById('app').classList.add('show');
+
+  renderMatches();
+  renderMesPronos();
+  await renderClassement();
+  await renderCompare();
+  renderRegles();
+  updateHeader();
+
+  if (showWelcomeToast) showToast(`👋 Content de te revoir, ${username} !`);
+}
+
+function handleLogout() {
+  sessionStorage.removeItem('wc2026_session');
+  currentUser = null;
+  pronos = {};
+  document.getElementById('app').classList.remove('show');
+  setupSplash();
+  goToScreen('splash');
+  document.getElementById('splashScreen').classList.remove('hidden');
+}
+
+// ========================================================================
+// ===== ADMIN =====
+// ========================================================================
+function handleAdminLogin() {
+  clearErrors();
+  const pwd = document.getElementById('adminPassword').value;
+  if (pwd !== ADMIN_PASSWORD) {
+    showFieldError('adminLoginError', 'Mot de passe administrateur incorrect.');
+    return;
+  }
+  document.getElementById('adminPassword').value = '';
+  SCREENS.forEach(s => document.getElementById(s + 'Screen')?.classList.add('hidden'));
+  document.getElementById('adminApp').style.display = 'block';
+  renderAdminUserList();
+}
+
+function handleAdminLogout() {
+  document.getElementById('adminApp').style.display = 'none';
+  setupSplash();
+  goToScreen('splash');
+  document.getElementById('splashScreen').classList.remove('hidden');
+}
+
+async function getAllUsers() {
+  const keys = await storageListKeys('users:', true);
+  const users = [];
+  for (const k of keys) {
+    const u = await storageGet(k, true);
+    if (u) users.push(u);
+  }
+  users.sort((a,b) => (a.createdAt||0) - (b.createdAt||0));
+  return users;
+}
+
+async function renderAdminUserList() {
+  const container = document.getElementById('adminUserList');
+  container.innerHTML = `<div class="empty"><div class="empty-icon">⏳</div>Chargement...</div>`;
+  const users = await getAllUsers();
+
+  if (!users.length) {
+    container.innerHTML = `<div class="empty"><div class="empty-icon">👤</div>Aucun utilisateur inscrit pour l'instant.</div>`;
+    return;
+  }
+
+  let html = '<div class="admin-card">';
+  users.forEach(u => {
+    const date = u.createdAt ? new Date(u.createdAt).toLocaleDateString('fr-FR') : '—';
+    html += `<div class="admin-user-row">
+      <div class="admin-user-info">
+        <div class="admin-user-name">👤 ${escapeHtml(u.username)}</div>
+        <div class="admin-user-meta">Inscrit le ${date}</div>
+      </div>
+      <button class="admin-btn gold" onclick="openResetModal('${escapeHtml(u.username)}')">🔑 Reset MDP</button>
+      <button class="admin-btn danger" onclick="openDeleteModal('${escapeHtml(u.username)}')">🗑️</button>
+    </div>`;
+  });
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+function openResetModal(username) {
+  resetTargetUser = username;
+  document.getElementById('resetUsername').value = username;
+  document.getElementById('resetCode').value = '';
+  document.getElementById('resetNewPassword').value = '';
+  document.getElementById('resetCodeError').classList.remove('show');
+  document.getElementById('resetModal').classList.remove('hidden');
+}
+
+async function confirmReset() {
+  const code = document.getElementById('resetCode').value.trim().toUpperCase();
+  const newPassword = document.getElementById('resetNewPassword').value;
+  document.getElementById('resetCodeError').classList.remove('show');
+
+  if (newPassword.length < 4) {
+    document.getElementById('resetCodeError').querySelector('span').textContent = 'Le nouveau mot de passe doit faire au moins 4 caractères.';
+    document.getElementById('resetCodeError').classList.add('show');
+    return;
+  }
+
+  const key = 'users:' + resetTargetUser.toLowerCase();
+  const user = await storageGet(key, true);
+  if (!user) { showToast('❌ Utilisateur introuvable'); closeModal('resetModal'); return; }
+
+  const codeHash = await hashText(code);
+  if (codeHash !== user.recoveryCodeHash) {
+    document.getElementById('resetCodeError').querySelector('span').textContent = 'Code de récupération incorrect.';
+    document.getElementById('resetCodeError').classList.add('show');
+    return;
+  }
+
+  user.passwordHash = await hashText(newPassword);
+  await storageSet(key, user, true);
+  closeModal('resetModal');
+  showToast(`✅ Mot de passe de ${resetTargetUser} réinitialisé`);
+}
+
+function openDeleteModal(username) {
+  deleteTargetUser = username;
+  document.getElementById('deleteUsernameLabel').textContent = username;
+  document.getElementById('deleteModal').classList.remove('hidden');
+}
+
+async function confirmDelete() {
+  await storageDelete('users:' + deleteTargetUser.toLowerCase(), true);
+  await storageDelete('pronos:' + deleteTargetUser.toLowerCase(), true);
+  closeModal('deleteModal');
+  showToast(`🗑️ ${deleteTargetUser} supprimé`);
+  renderAdminUserList();
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.add('hidden');
+}
+
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// ========================================================================
+// ===== SCORING =====
+// ========================================================================
+function calcScore(prono, match) {
+  if (!prono || match.status !== 'final') return null;
+  const ph = prono.h, pa = prono.a;
+  const rh = match.hScore, ra = match.aScore;
+  if (ph === rh && pa === ra) return {pts: 3, label: 'Exact !', cls: 'result-exact'};
+  const rWin = rh > ra ? 'h' : ra > rh ? 'a' : 'd';
+  const pWin = ph > pa ? 'h' : pa > ph ? 'a' : 'd';
+  if (rWin === pWin) return {pts: 1, label: 'Vainqueur ✓', cls: 'result-winner'};
+  return {pts: 0, label: 'Raté', cls: 'result-miss'};
+}
+
+function getTotalScoreFor(pronosObj) {
+  let total = 0;
+  matches.forEach(m => {
+    const r = calcScore(pronosObj[m.id], m);
+    if (r) total += r.pts;
+  });
+  return total;
+}
+
+function getTotalScore() { return getTotalScoreFor(pronos); }
+function getPronoCount() { return Object.keys(pronos).length; }
+
+function updateHeader() {
+  document.getElementById('totalScore').textContent = getTotalScore();
+  document.getElementById('pronoCount').textContent = getPronoCount();
+}
+
+// ========================================================================
+// ===== RENDER: MATCHS =====
+// ========================================================================
+function renderMatches() {
+  const live = matches.filter(m => m.status === 'in_progress');
+  const upcoming = matches.filter(m => m.status === 'scheduled');
+  const finished = matches.filter(m => m.status === 'final');
+
+  let html = '';
+
+  if (live.length) {
+    html += `<div class="section-label"><span class="live-dot"></span> En Direct</div>`;
+    live.forEach(m => { html += renderCard(m); });
+  }
+
+  if (upcoming.length) {
+    html += `<div class="section-label">🗓️ À venir</div>`;
+    upcoming.forEach(m => { html += renderCard(m); });
+  }
+
+  if (finished.length) {
+    html += `<div class="section-label">✅ Terminés</div>`;
+    finished.forEach(m => { html += renderCard(m); });
+  }
+
+  document.getElementById('tab-matches').innerHTML = html;
+}
+
+function renderCard(m) {
+  const prono = pronos[m.id];
+  const hasProno = prono !== undefined;
+  const result = calcScore(prono, m);
+  const isLive = m.status === 'in_progress';
+  const isFinal = m.status === 'final';
+  const canEdit = !isFinal;
+
+  let cardClass = 'match-card';
+  if (hasProno) cardClass += ' has-prono';
+  if (isLive) cardClass += ' live';
+
+  let scoreHTML = '';
+  if (isFinal || isLive) {
+    const cls = isLive ? 'live-score' : 'final-score';
+    scoreHTML = `<div class="score-display ${cls}">${m.hScore} <span style="color:var(--border)">·</span> ${m.aScore}</div>`;
+  } else {
+    scoreHTML = `<div class="vs-text">VS</div>`;
+  }
+
+  let probHTML = '';
+  if (m.prob) {
+    probHTML = `<div class="prob-bar-wrap">
+      <div class="prob-bar" style="flex:${m.prob.h};background:var(--blue)"></div>
+      <div class="prob-bar" style="flex:${m.prob.d};background:var(--muted)"></div>
+      <div class="prob-bar" style="flex:${m.prob.a};background:var(--gold)"></div>
+    </div>`;
+  }
+
+  let pronoSummary = '';
+  if (hasProno && isFinal && result) {
+    pronoSummary = `<div class="prono-summary">
+      🎯 Ton prono : <span class="prono-score-preview">${prono.h} - ${prono.a}</span>
+      <span class="result-badge ${result.cls}">${result.label} · +${result.pts}pts</span>
+    </div>`;
+  } else if (hasProno && isLive) {
+    pronoSummary = `<div class="prono-summary">
+      🎯 Ton prono : <span class="prono-score-preview">${prono.h} - ${prono.a}</span>
+    </div>`;
+  }
+
+  const ph = prono ? prono.h : 0;
+  const pa = prono ? prono.a : 0;
+
+  let pronoArea = '';
+  if (canEdit) {
+    pronoArea = `<div class="prono-area" id="prono-${m.id}">
+      <div class="prono-label">✦ Mon prono</div>
+      <div class="prono-inputs">
+        <div class="prono-team-label">${NAMES[m.home] || m.home}</div>
+        <div class="score-input-wrap">
+          <button class="score-btn" onclick="changeScore('${m.id}','h',-1)">−</button>
+          <span class="score-val" id="ph-${m.id}">${ph}</span>
+          <button class="score-btn" onclick="changeScore('${m.id}','h',1)">+</button>
+        </div>
+        <span class="prono-dash">-</span>
+        <div class="score-input-wrap">
+          <button class="score-btn" onclick="changeScore('${m.id}','a',-1)">−</button>
+          <span class="score-val" id="pa-${m.id}">${pa}</span>
+          <button class="score-btn" onclick="changeScore('${m.id}','a',1)">+</button>
+        </div>
+        <div class="prono-team-label">${NAMES[m.away] || m.away}</div>
+      </div>
+      <button class="save-btn" onclick="saveProno('${m.id}')">
+        ${hasProno ? '✓ Modifier' : 'Valider'}
+      </button>
+      ${hasProno ? '<div class="saved-badge" id="badge-'+m.id+'">✓ Prono enregistré</div>' : ''}
+    </div>`;
+  } else if (hasProno) {
+    pronoArea = pronoSummary;
+  }
+
+  return `<div class="${cardClass}" id="card-${m.id}">
+    <div class="match-header">
+      ${isLive ? '<span class="live-dot"></span>' : ''}
+      ${isLive ? '<span style="color:var(--live);font-weight:700">EN DIRECT</span>' : m.time}
+    </div>
+    <div class="match-body">
+      <div class="team">
+        <span class="team-flag">${FLAGS[m.home] || '🏳️'}</span>
+        <span class="team-name">${m.home}</span>
+      </div>
+      <div class="vs-area">${scoreHTML}</div>
+      <div class="team">
+        <span class="team-flag">${FLAGS[m.away] || '🏳️'}</span>
+        <span class="team-name">${m.away}</span>
+      </div>
+    </div>
+    ${probHTML}
+    ${pronoArea}
+  </div>`;
+}
+
+// ========================================================================
+// ===== RENDER: MES PRONOS =====
+// ========================================================================
+function renderMesPronos() {
+  const hasPronos = Object.keys(pronos).length > 0;
+  if (!hasPronos) {
+    document.getElementById('tab-mespromos').innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">📋</div>
+        Tu n'as pas encore fait de prono.<br>Rendez-vous dans l'onglet <strong>Matchs</strong> ⚽
+      </div>`;
+    return;
+  }
+
+  let html = `<div class="section-label">📋 Tes pronostics</div>`;
+  matches.forEach(m => {
+    const p = pronos[m.id];
+    if (!p) return;
+    const result = calcScore(p, m);
+    const isFinal = m.status === 'final';
+
+    let badgeHTML = '';
+    if (isFinal && result) {
+      badgeHTML = `<span class="result-badge ${result.cls}">${result.label} · +${result.pts}pts</span>`;
+    }
+
+    html += `<div class="match-card has-prono" style="margin-bottom:10px">
+      <div class="match-header">${m.time}</div>
+      <div class="match-body">
+        <div class="team">
+          <span class="team-flag">${FLAGS[m.home]||'🏳️'}</span>
+          <span class="team-name">${m.home}</span>
+        </div>
+        <div class="vs-area" style="text-align:center">
+          ${isFinal ? `<div class="score-display final-score" style="font-size:22px">${m.hScore}·${m.aScore}</div><div style="font-size:10px;color:var(--muted);margin:2px 0">Résultat</div>` : ''}
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:${isFinal?'28':'36'}px;color:var(--gold)">${p.h} - ${p.a}</div>
+          <div style="font-size:10px;color:var(--gold-dim)">Ton prono</div>
+          ${badgeHTML}
+        </div>
+        <div class="team">
+          <span class="team-flag">${FLAGS[m.away]||'🏳️'}</span>
+          <span class="team-name">${m.away}</span>
+        </div>
+      </div>
+    </div>`;
+  });
+
+  document.getElementById('tab-mespromos').innerHTML = html;
+}
+
+// ========================================================================
+// ===== RENDER: CLASSEMENT (multi-utilisateurs réel) =====
+// ========================================================================
+async function getAllPlayersWithScores() {
+  const users = await getAllUsers();
+  const players = [];
+  for (const u of users) {
+    const userPronos = (u.username.toLowerCase() === (currentUser||'').toLowerCase())
+      ? pronos
+      : (await storageGet('pronos:' + u.username.toLowerCase(), true)) || {};
+    players.push({
+      username: u.username,
+      pronos: userPronos,
+      pts: getTotalScoreFor(userPronos),
+      isUser: currentUser && u.username.toLowerCase() === currentUser.toLowerCase(),
+    });
+  }
+  allUsersCache = players;
+  return players;
+}
+
+async function renderClassement() {
+  const container = document.getElementById('tab-classement');
+  container.innerHTML = `<div class="empty"><div class="empty-icon">⏳</div>Chargement du classement...</div>`;
+
+  const players = await getAllPlayersWithScores();
+  players.sort((a,b) => b.pts - a.pts);
+
+  const medals = ['🥇','🥈','🥉'];
+
+  let html = `<div class="section-label">🏅 Classement général</div>`;
+  if (!players.length) {
+    html += `<div class="empty"><div class="empty-icon">👥</div>Aucun joueur pour l'instant.</div>`;
+  } else {
+    players.forEach((r, i) => {
+      html += `<div class="rank-row ${r.isUser ? 'is-user' : ''}">
+        <span class="rank-medal">${medals[i] || ''}</span>
+        <span class="rank-num ${i===0 ? 'gold' : ''}">${i+1}</span>
+        <span class="rank-avatar">${r.username.charAt(0).toUpperCase()}</span>
+        <span class="rank-name">${escapeHtml(r.username)}${r.isUser ? ' (Toi)' : ''}</span>
+        <span>
+          <span class="rank-pts">${r.pts}</span>
+          <span class="rank-pts-label"> pts</span>
+        </span>
+      </div>`;
+    });
+    html += `<div style="font-size:11px;color:var(--muted);text-align:center;margin-top:12px;padding:0 16px">
+      🔗 Invite tes amis à créer un compte pour comparer vos scores !
+    </div>`;
+  }
+
+  container.innerHTML = html;
+}
+
+// ========================================================================
+// ===== RENDER: TABLEAU COMPARATIF =====
+// ========================================================================
+async function renderCompare() {
+  const container = document.getElementById('tab-compare');
+  container.innerHTML = `<div class="empty"><div class="empty-icon">⏳</div>Chargement du comparatif...</div>`;
+
+  const players = allUsersCache.length ? allUsersCache : await getAllPlayersWithScores();
+  const sorted = [...players].sort((a,b) => b.pts - a.pts);
+
+  // On compare seulement sur les matchs terminés (résultats connus), les plus récents en premier, max 8 colonnes
+  const finishedMatches = matches.filter(m => m.status === 'final').slice(-8);
+
+  if (!sorted.length) {
+    container.innerHTML = `<div class="empty"><div class="empty-icon">📊</div>Aucun joueur à comparer pour l'instant.</div>`;
+    return;
+  }
+
+  if (!finishedMatches.length) {
+    container.innerHTML = `<div class="section-label">📊 Comparatif</div>
+      <div class="empty"><div class="empty-icon">⏱️</div>Le comparatif s'affichera dès que des matchs seront terminés.</div>`;
+    return;
+  }
+
+  let html = `<div class="section-label">📊 Comparatif des pronostiqueurs</div>
+    <div class="compare-scroll"><table class="compare-table">
+      <thead><tr>
+        <th class="player-col">Joueur</th>
+        ${finishedMatches.map(m => `<th>${FLAGS[m.home]}${FLAGS[m.away]}</th>`).join('')}
+        <th>Total</th>
+      </tr></thead><tbody>`;
+
+  sorted.forEach(player => {
+    html += `<tr class="${player.isUser ? 'is-user' : ''}">
+      <td class="player-col">${player.isUser ? '⭐ ' : ''}${escapeHtml(player.username)}</td>`;
+    finishedMatches.forEach(m => {
+      const p = player.pronos[m.id];
+      if (!p) {
+        html += `<td class="cell-pending">—</td>`;
+      } else {
+        const r = calcScore(p, m);
+        const cls = r.pts === 3 ? 'cell-exact' : r.pts === 1 ? 'cell-winner' : 'cell-miss';
+        html += `<td class="${cls}">${p.h}-${p.a}</td>`;
+      }
+    });
+    html += `<td class="compare-total">${player.pts}</td></tr>`;
+  });
+
+  html += `</tbody></table></div>
+    <div class="compare-hint">↔️ Glisse horizontalement pour voir tous les matchs</div>`;
+
+  container.innerHTML = html;
+}
+
+// ========================================================================
+// ===== RENDER: RÈGLES =====
+// ========================================================================
+function renderRegles() {
+  document.getElementById('tab-regles').innerHTML = `
+    <div class="rules-card">
+      <h3>🎯 Système de points</h3>
+      <div class="rule-row"><span class="rule-pts">3</span> Score exact (ex: 2-1 → 2-1) 🎯</div>
+      <div class="rule-row"><span class="rule-pts">1</span> Bon vainqueur ou bon nul ✅</div>
+      <div class="rule-row"><span class="rule-pts">0</span> Résultat complètement raté ❌</div>
+    </div>
+    <div class="rules-card">
+      <h3>📖 Comment jouer</h3>
+      <div class="rule-row" style="font-size:12px;border:none;display:block;line-height:1.8">
+        1. Va dans l'onglet <strong>⚽ Matchs</strong><br>
+        2. Pour chaque match à venir, rentre ton pronostic avec les boutons + et −<br>
+        3. Clique sur <strong>Valider</strong> pour enregistrer<br>
+        4. Une fois les matchs terminés, tes points sont calculés automatiquement<br>
+        5. Consulte <strong>🏅 Classement</strong> et <strong>📊 Comparatif</strong> pour voir où tu en es face aux autres !
+      </div>
+    </div>
+    <div class="rules-card">
+      <h3>🔐 Compte & sécurité</h3>
+      <div style="font-size:12px;color:var(--muted);line-height:1.8">
+        Tes pronos sont liés à ton compte et synchronisés pour que tout le monde puisse comparer ses scores. Garde bien ton code de récupération reçu à l'inscription : il est indispensable si tu perds ton mot de passe, l'admin en aura besoin pour le réinitialiser.
+      </div>
+    </div>
+  `;
+}
+
+// ========================================================================
+// ===== INTERACTIONS PRONOS =====
+// ========================================================================
+const tempScores = {};
+
+function changeScore(id, side, delta) {
+  if (!tempScores[id]) {
+    const p = pronos[id];
+    tempScores[id] = p ? {h: p.h, a: p.a} : {h: 0, a: 0};
+  }
+  tempScores[id][side] = Math.max(0, tempScores[id][side] + delta);
+  document.getElementById(`p${side}-${id}`).textContent = tempScores[id][side];
+}
+
+async function saveProno(id) {
+  const t = tempScores[id] || pronos[id] || {h:0, a:0};
+  pronos[id] = {h: t.h, a: t.a};
+  await storageSet('pronos:' + currentUser.toLowerCase(), pronos, true);
+  updateHeader();
+  renderMatches();
+  renderMesPronos();
+  showToast('✅ Prono enregistré !');
+}
+
+// ========================================================================
+// ===== TABS =====
+// ========================================================================
+function setupTabs() {
+  document.querySelectorAll('#mainTabs .tab').forEach(btn => {
+    btn.onclick = async function() {
+      const tab = this.dataset.tab;
+      currentTab = tab;
+      document.querySelectorAll('#mainTabs .tab').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+      ['tab-matches','tab-mespromos','tab-classement','tab-compare','tab-regles'].forEach(id => {
+        document.getElementById(id).style.display = 'none';
+      });
+      const divMap = {matches:'tab-matches', mespromos:'tab-mespromos', classement:'tab-classement', compare:'tab-compare', regles:'tab-regles'};
+      document.getElementById(divMap[tab]).style.display = 'block';
+
+      if (tab === 'mespromos') renderMesPronos();
+      if (tab === 'classement') await renderClassement();
+      if (tab === 'compare') await renderCompare();
+      if (tab === 'regles') renderRegles();
+    };
+  });
+}
+
+// ========================================================================
+// ===== GO! =====
+// ========================================================================
+init();
+</script>
+
+</body>
+</html>
